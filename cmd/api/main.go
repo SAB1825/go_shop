@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"errors"
-	"fmt"
 	"net/http"
 	"os"
 	"os/signal"
@@ -45,7 +44,7 @@ func main() {
 	router := srv.SetupRoutes()
 
 	httpServer := &http.Server{
-		Addr:         fmt.Sprintf("%s", cfg.Server.Port),
+		Addr:         cfg.Server.Port,
 		Handler:      router,
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 10 * time.Second,
@@ -67,7 +66,8 @@ func main() {
 	defer cancel()
 
 	if err := httpServer.Shutdown(ctx); err != nil {
-		log.Fatal().Err(err).Msg("failed to setup http server")
+		log.Error().Err(err).Msg("failed to setup http server")
+		return
 	}
 
 	log.Info().Msg("shutting down database")
