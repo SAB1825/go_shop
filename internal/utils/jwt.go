@@ -9,13 +9,13 @@ import (
 )
 
 type Claims struct {
-	UserID string `json:"user_id"`
+	UserID uint   `json:"user_id"`
 	Email  string `json:"email"`
 	Role   string `json:"role"`
 	jwt.RegisteredClaims
 }
 
-func GenerateTokenPairs(cfg *config.JWTConfig, role, email, userId string) (accessToken, refreshToken string) {
+func GenerateTokenPairs(cfg *config.JWTConfig, role, email string, userId uint) (accessToken, refreshToken string, err error) {
 
 	// AccessToken
 	accessClaim := &Claims{
@@ -32,7 +32,7 @@ func GenerateTokenPairs(cfg *config.JWTConfig, role, email, userId string) (acce
 	accessTokenString, err := at.SignedString([]byte(cfg.Secret))
 
 	if err != nil {
-		return "", ""
+		return "", "", err
 	}
 
 	// RefreshToken
@@ -50,10 +50,10 @@ func GenerateTokenPairs(cfg *config.JWTConfig, role, email, userId string) (acce
 	refershTokenString, err := rt.SignedString([]byte(cfg.Secret))
 
 	if err != nil {
-		return "", ""
+		return "", "", err
 	}
 
-	return accessTokenString, refershTokenString
+	return accessTokenString, refershTokenString, nil
 
 }
 
