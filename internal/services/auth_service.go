@@ -17,18 +17,18 @@ type AuthService struct {
 	config *config.Config
 }
 
-func NewAuthService(db *gorm.DB, config *config.Config) *AuthService {
+func NewAuthService(db *gorm.DB, cfg *config.Config) *AuthService {
 	return &AuthService{
 		db:     db,
-		config: config,
+		config: cfg,
 	}
 }
 
-func (s *AuthService) GetDB(req *dto.RegisterRequest) (*dto.AuthResponse, error) {
+func (s *AuthService) Register(req *dto.RegisterRequest) (*dto.AuthResponse, error) {
 	// Check if user exists
 	var existingUser models.User
-	if err := s.db.Where("email = ?", req.Email).First(&existingUser).Error; err != nil {
-		return nil, errors.New("user not found")
+	if err := s.db.Where("email = ?", req.Email).First(&existingUser).Error; err == nil {
+		return nil, errors.New("user already exists")
 	}
 
 	// Hash the password
