@@ -41,7 +41,7 @@ func GenerateTokenPairs(cfg *config.JWTConfig, role, email string, userId uint) 
 		Email:  email,
 		Role:   role,
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(cfg.ExpiresIn)),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(cfg.RefreshTokenExpires)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 		},
 	}
